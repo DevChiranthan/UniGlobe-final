@@ -51,7 +51,7 @@ const AddCollegeForm = ({ onCollegeAdded }) => {
 
     setSubmitStatus("Submitting...");
     try {
-      const response = await fetch('http://localhost:5000/api/colleges', {
+      const response = await fetch('https://uniglobe-final.onrender.com/api/colleges', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(collegeData)

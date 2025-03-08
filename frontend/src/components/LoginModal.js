@@ -49,7 +49,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       
       // Close the modal and redirect to home
       onClose();
-      window.location.href = 'http://localhost:3000';
+      window.location.href = '/';
     } catch (error) {
       console.error('Error processing Google login:', error);
       setError('Failed to process Google sign-in. Please try again.');

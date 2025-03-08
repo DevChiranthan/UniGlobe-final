@@ -17,7 +17,7 @@ const AdminDashboard = () => {
   // Fetch colleges from backend and update stats
   const fetchColleges = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/colleges');
+      const response = await fetch('https://uniglobe-final.onrender.com/api/colleges');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
