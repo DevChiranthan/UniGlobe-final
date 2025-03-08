@@ -426,6 +426,11 @@
     bottom: 0;
     left: 0;
     height: 100%;
+    width: 250px;
+    /* Ensure the sidebar has a higher z-index */
+    z-index: 1100;
+    /* Add overflow hidden to prevent content from spilling out */
+    overflow: hidden;
   }
   
   .admin-sidebar.closed {
@@ -436,12 +441,30 @@
   .admin-sidebar.open {
     transform: translateX(0);
     width: 250px;
+    /* Add a semi-transparent overlay behind the sidebar */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Add a full screen overlay when sidebar is open */
+  .sidebar-open:before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    display: block;
   }
   
   .admin-content {
     width: 100%;
     margin-left: 0;
     padding-top: 60px; /* Give space for the toggle button */
+    /* Ensure content is always below the sidebar in z-index */
+    z-index: 1000;
+    position: relative;
   }
   
   .sidebar-open .admin-content {
@@ -457,7 +480,14 @@
   }
   
   .close-button {
-    z-index: 1002; /* Ensure it's above the sidebar */
+    z-index: 1200; /* Ensure it's above everything */
+  }
+  
+  /* Ensure the admin menu items stay within the sidebar */
+  .admin-menu {
+    width: 100%;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px); /* Allow scrolling if many menu items */
   }
 }
 
