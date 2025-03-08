@@ -1,11 +1,42 @@
 // src/components/Header.js
-import React, { useState } from 'react';
-import { Search, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, User, LogOut } from 'lucide-react';
 import LoginModal from './LoginModal';
 import { Link } from 'react-router-dom';
 
 const Header = ({ onLoginClick, isAdmin, onLogout }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [studentInfo, setStudentInfo] = useState({
+    name: '',
+    email: '',
+    picture: ''
+  });
+
+  useEffect(() => {
+    // Check login status on component mount and localStorage changes
+    const checkLoginStatus = () => {
+      const studentAuth = localStorage.getItem('studentAuth') === 'true';
+      setIsLoggedIn(studentAuth);
+      
+      if (studentAuth) {
+        setStudentInfo({
+          name: localStorage.getItem('studentName') || 'Student',
+          email: localStorage.getItem('studentEmail') || '',
+          picture: localStorage.getItem('studentPicture') || ''
+        });
+      }
+    };
+
+    checkLoginStatus();
+    
+    // Listen for storage events (in case another tab changes auth status)
+    window.addEventListener('storage', checkLoginStatus);
+    
+    return () => {
+      window.removeEventListener('storage', checkLoginStatus);
+    };
+  }, []);
 
   const handleLoginClick = () => {
     // Use the prop if provided, otherwise use local state
@@ -13,6 +44,23 @@ const Header = ({ onLoginClick, isAdmin, onLogout }) => {
       onLoginClick();
     } else {
       setIsLoginModalOpen(true);
+    }
+  };
+
+  const handleLogout = () => {
+    // Clear auth data from localStorage
+    localStorage.removeItem('studentAuth');
+    localStorage.removeItem('studentEmail');
+    localStorage.removeItem('studentName');
+    localStorage.removeItem('studentPicture');
+    
+    // Update state
+    setIsLoggedIn(false);
+    setStudentInfo({ name: '', email: '', picture: '' });
+    
+    // If admin logout function exists, call it too
+    if (onLogout) {
+      onLogout();
     }
   };
 
@@ -48,7 +96,24 @@ const Header = ({ onLoginClick, isAdmin, onLogout }) => {
                   onClick={onLogout}
                   className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 flex items-center transition-all duration-300 transform hover:scale-105 active:scale-95"
                 >
-                  Log Out
+                  <LogOut className="mr-2" size={18} /> Log Out
+                </button>
+              </div>
+            ) : isLoggedIn ? (
+              <div className="flex items-center space-x-4">
+                {studentInfo.picture && (
+                  <img 
+                    src={studentInfo.picture} 
+                    alt="Profile" 
+                    className="w-8 h-8 rounded-full border-2 border-blue-400"
+                  />
+                )}
+                <span className="text-white hidden md:inline">{studentInfo.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 flex items-center transition-all duration-300 transform hover:scale-105 active:scale-95"
+                >
+                  <LogOut className="mr-2" size={18} /> Log Out
                 </button>
               </div>
             ) : (

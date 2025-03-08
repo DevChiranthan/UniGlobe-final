@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './LoginModal.css'; // Make sure your CSS file is properly linked
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+import './LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('student');
@@ -25,11 +27,37 @@ const LoginModal = ({ isOpen, onClose }) => {
       // Add your student authentication logic here
       localStorage.setItem('studentAuth', 'true');
       localStorage.setItem('studentEmail', email);
+      localStorage.setItem('studentName', email.split('@')[0]); // Default name from email
       onClose();
     } else {
       // Admin login logic - redirect to admin login page or handle directly
       navigate('/admin/login');
     }
+  };
+
+  const handleGoogleLoginSuccess = (credentialResponse) => {
+    try {
+      // Decode the JWT token from Google
+      const decodedToken = jwtDecode(credentialResponse.credential);
+      console.log('Google login successful:', decodedToken);
+      
+      // Store user info in localStorage
+      localStorage.setItem('studentAuth', 'true');
+      localStorage.setItem('studentEmail', decodedToken.email);
+      localStorage.setItem('studentName', decodedToken.name);
+      localStorage.setItem('studentPicture', decodedToken.picture);
+      
+      // Close the modal and redirect to home
+      onClose();
+      window.location.href = 'http://localhost:3000';
+    } catch (error) {
+      console.error('Error processing Google login:', error);
+      setError('Failed to process Google sign-in. Please try again.');
+    }
+  };
+
+  const handleGoogleLoginError = () => {
+    setError('Google sign-in failed. Please try again or use email login.');
   };
 
   if (!isOpen) return null;
@@ -86,8 +114,31 @@ const LoginModal = ({ isOpen, onClose }) => {
               </div>
               
               <button type="submit" className="submit-btn">Login</button>
+              
+              <div className="login-divider">
+                <span>OR</span>
+              </div>
+              
+              <div className="google-login-container">
+                <GoogleLogin
+                  onSuccess={handleGoogleLoginSuccess}
+                  onError={handleGoogleLoginError}
+                  useOneTap
+                  theme="filled_blue"
+                  text="signin_with"
+                  shape="rectangular"
+                  size="large"
+                  width="100%"
+                />
+              </div>
+              
               <div className="forgot-password">
-                <a href="https://example.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors duration-300">Forgot Password?</a>
+                <button 
+                  onClick={() => navigate('/reset-password')} 
+                  className="text-gray-400 hover:text-blue-400 transition-colors duration-300 bg-transparent border-none cursor-pointer p-0"
+                >
+                  Forgot Password?
+                </button>
               </div>
             </form>
           ) : (

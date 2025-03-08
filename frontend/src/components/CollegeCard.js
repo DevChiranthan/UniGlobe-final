@@ -25,7 +25,7 @@ const CollegeCard = ({ college }) => {
   };
 
   return (
-    <div className="college-card bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-102 transition-all duration-300 border border-gray-700 mb-6 hover:shadow-2xl">
+    <div className="college-card bg-gray-800 rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 border border-gray-700 mb-6 hover:shadow-2xl">
       <div className="flex flex-col md:flex-row">
         <div className="p-6 md:w-1/2">
           <div className="flex items-start">

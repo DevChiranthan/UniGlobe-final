@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import Header from './components/Header';
 import CourseNavigation from './components/CourseNavigation';
 import CollegesContainer from './components/CollegesContainer';
@@ -24,16 +25,17 @@ const ProtectedRoute = ({ children }) => {
 // Home page component
 const Home = () => {
   const [activeCourse, setActiveCourse] = useState("All Colleges");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 text-white">
-      <Header />
+      <Header onLoginClick={() => setIsModalOpen(true)} />
       <CourseNavigation setActiveCourse={setActiveCourse} />
       <main className="flex-grow">
         <CollegesContainer activeCourse={activeCourse} />
       </main>
       <Footer />
-      <LoginModal />
+      <LoginModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };
@@ -55,29 +57,31 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <Routes>
-        {/* Main website route */}
-        <Route path="/" element={<Home />} />
-        
-        {/* Admin routes */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route 
-          path="/admin/dashboard" 
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          } 
-        />
-        
-        {/* Loading screen demo route */}
-        <Route path="/loading" element={<LoadingScreen />} />
-        
-        {/* Fallback route */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+    <GoogleOAuthProvider clientId="575571794340-4n9k6pmk2davu94c3p1gfq3cvfte97ml.apps.googleusercontent.com">
+      <Router>
+        <Routes>
+          {/* Main website route */}
+          <Route path="/" element={<Home />} />
+          
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin/dashboard" 
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Loading screen demo route */}
+          <Route path="/loading" element={<LoadingScreen />} />
+          
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 };
 
