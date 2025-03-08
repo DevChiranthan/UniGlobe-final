@@ -6,6 +6,7 @@ import AddCollegeForm from './AddCollegeForm';
 const AdminDashboard = () => {
   const [colleges, setColleges] = useState([]);
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [stats, setStats] = useState({
     totalColleges: 0,
     totalViews: 0,
@@ -45,6 +46,24 @@ const AdminDashboard = () => {
       return;
     }
     fetchColleges();
+
+    // Check window size on initial load
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+
+    // Set initial state based on window size
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
   }, [navigate]);
 
   const handleLogout = () => {
@@ -55,11 +74,19 @@ const AdminDashboard = () => {
 
   const handleAddCollegeTab = () => {
     setActiveTab('addCollege');
+    // Auto-close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
   };
 
   const handleViewDashboard = () => {
     setActiveTab('dashboard');
     fetchColleges(); // Refresh dashboard data
+    // Auto-close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
   };
 
   const handleCollegeAdded = (newCollege) => {
@@ -72,12 +99,22 @@ const AdminDashboard = () => {
     navigate('/');
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
-    <div className="admin-dashboard-container">
+    <div className={`admin-dashboard-container ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       <button className="close-button" onClick={handleClose}>
         &times;
       </button>
-      <div className="admin-sidebar">
+      
+      {/* Hamburger Menu Toggle */}
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        <span className="toggle-icon"></span>
+      </button>
+      
+      <div className={`admin-sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="admin-logo">
           <h2>Uni<span>Globe</span> Admin</h2>
         </div>
@@ -124,30 +161,32 @@ const AdminDashboard = () => {
                 </div>
                 <div className="colleges-list">
                   <h3>Your Colleges ({colleges.length})</h3>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>College Name</th>
-                        <th>Location</th>
-                        <th>Course</th>
-                        <th>Views</th>
-                        <th>Clicks</th>
-                        <th>Applications</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {colleges.map((college) => (
-                        <tr key={college._id}>
-                          <td>{college.name}</td>
-                          <td>{college.location}</td>
-                          <td>{college.courseType} - {college.courseName}</td>
-                          <td>{college.views || 0}</td>
-                          <td>{college.clicks || 0}</td>
-                          <td>{college.applications || 0}</td>
+                  <div className="table-responsive">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>College Name</th>
+                          <th>Location</th>
+                          <th>Course</th>
+                          <th>Views</th>
+                          <th>Clicks</th>
+                          <th>Applications</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {colleges.map((college) => (
+                          <tr key={college._id}>
+                            <td>{college.name}</td>
+                            <td>{college.location}</td>
+                            <td>{college.courseType} - {college.courseName}</td>
+                            <td>{college.views || 0}</td>
+                            <td>{college.clicks || 0}</td>
+                            <td>{college.applications || 0}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </>
             )}
