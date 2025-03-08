@@ -9,9 +9,7 @@ const app = express();
 
 // Enhanced CORS configuration with Netlify domain added
 app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:3001', 
+  origin: [ 
     'https://kaleidoscopic-taffy-eecc7c.netlify.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
