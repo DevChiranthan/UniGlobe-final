@@ -7,9 +7,13 @@ require('dotenv').config();
 
 const app = express();
 
-// Enhanced CORS configuration
+// Enhanced CORS configuration with Netlify domain added
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'], // Add your frontend URLs
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:3001', 
+    'https://kaleidoscopic-taffy-eecc7c.netlify.app'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
