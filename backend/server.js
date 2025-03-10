@@ -10,7 +10,7 @@ const app = express();
 // Enhanced CORS configuration with Netlify domain added
 app.use(cors({
   origin: [ 
-    'https://kaleidoscopic-taffy-eecc7c.netlify.app'
+    'https://uniglobe-final.netlify.app/netlify.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']

@@ -49,7 +49,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       
       // Close the modal and redirect to home
       onClose();
-      window.location.href = 'https://kaleidoscopic-taffy-eecc7c.netlify.app';
+      window.location.href = 'https://uniglobe-final.netlify.app/netlify.app';
     } catch (error) {
       console.error('Error processing Google login:', error);
       setError('Failed to process Google sign-in. Please try again.');
