@@ -9,12 +9,14 @@ const app = express();
 
 // Enhanced CORS configuration with Netlify domain added
 app.use(cors({
-  origin: [ 
-    'https://uniglobe-final.netlify.app'
+  origin: [
+    'https://uniglobe-final.netlify.app',
+    'http://localhost:3000'    // 👈 Add localhost also
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 // Parse JSON requests with increased size limit
 app.use(express.json({ limit: '1mb' }));
